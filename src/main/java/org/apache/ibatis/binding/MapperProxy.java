@@ -54,7 +54,17 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
       throw ExceptionUtil.unwrapThrowable(t);
     }
     final MapperMethod mapperMethod = cachedMapperMethod(method);
-    return mapperMethod.execute(sqlSession, args);
+    if (!sqlSession.isAutoClose()) {
+      return mapperMethod.execute(sqlSession, args);
+    } else {
+      try {
+        Object result = mapperMethod.execute(sqlSession, args);
+        sqlSession.commit();
+        return result;
+      } finally {
+        sqlSession.close();
+      }
+    }
   }
 
   private MapperMethod cachedMapperMethod(Method method) {

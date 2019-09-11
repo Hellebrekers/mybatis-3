@@ -51,6 +51,7 @@ public class DefaultSqlSession implements SqlSession {
   private final Executor executor;
 
   private final boolean autoCommit;
+  private boolean autoClose;
   private boolean dirty;
   private List<Cursor<?>> cursorList;
 
@@ -63,6 +64,16 @@ public class DefaultSqlSession implements SqlSession {
 
   public DefaultSqlSession(Configuration configuration, Executor executor) {
     this(configuration, executor, false);
+  }
+
+  @Override
+  public boolean isAutoClose() {
+    return autoClose;
+  }
+
+  @Override
+  public void setAutoClose(boolean autoClose) {
+    this.autoClose = autoClose;
   }
 
   @Override

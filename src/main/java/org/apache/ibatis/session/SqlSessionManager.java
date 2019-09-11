@@ -36,6 +36,7 @@ public class SqlSessionManager implements SqlSessionFactory, SqlSession {
 
   private final SqlSessionFactory sqlSessionFactory;
   private final SqlSession sqlSessionProxy;
+  private boolean autoClose;
 
   private final ThreadLocal<SqlSession> localSqlSession = new ThreadLocal<>();
 
@@ -45,6 +46,16 @@ public class SqlSessionManager implements SqlSessionFactory, SqlSession {
         SqlSessionFactory.class.getClassLoader(),
         new Class[]{SqlSession.class},
         new SqlSessionInterceptor());
+  }
+
+  @Override
+  public boolean isAutoClose() {
+    return autoClose;
+  }
+
+  @Override
+  public void setAutoClose(boolean autoClose) {
+    this.autoClose = autoClose;
   }
 
   public static SqlSessionManager newInstance(Reader reader) {
