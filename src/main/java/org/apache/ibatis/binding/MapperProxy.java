@@ -90,17 +90,13 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     }
     final MapperMethodInvoker invoker = cachedInvoker(method);
     if (!sqlSession.isAutoClose()) {
-      System.out.println("Geen autoclose");
       return invoker.invoke(proxy, method, args, sqlSession);
     } else {
-      System.out.println("Wel Autoclose");
       try {
         Object result = invoker.invoke(proxy, method, args, sqlSession);
-        System.out.println(sqlSession + " - commit");
         sqlSession.commit();
         return result;
       } finally {
-        System.out.println(sqlSession + " - close");
         sqlSession.close();
       }
     }
