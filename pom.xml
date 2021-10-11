@@ -123,11 +123,16 @@
     <url>https://travis-ci.org/mybatis/mybatis-3/</url>
   </ciManagement>
   <distributionManagement>
-    <site>
-      <id>gh-pages</id>
-      <name>Mybatis GitHub Pages</name>
-      <url>git:ssh://git@github.com/mybatis/mybatis-3.git?gh-pages#</url>
-    </site>
+    <repository>
+      <id>maven.jonker.nl</id>
+      <name>maven.jonker.nl-releases</name>
+      <url>http://maven.jonker.nl:8081/artifactory/nl-jonker</url>
+    </repository>
+    <snapshotRepository>
+      <id>maven.jonker.nl</id>
+      <name>maven.jonker.nl-snapshots</name>
+      <url>http://maven.jonker.nl:8081/artifactory/nl-jonker-snapshots</url>
+    </snapshotRepository>
   </distributionManagement>
 
   <properties>
@@ -409,14 +414,5 @@
       </properties>
     </profile>
   </profiles>
-
-  <!-- Will remove after released mybatis-parent 32+ (See https://github.com/mybatis/mybatis-3/issues/1926) -->
-  <repositories>
-    <repository>
-      <id>sonatype-oss-snapshots</id>
-      <name>Sonatype OSS Snapshots Repository</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </repository>
-  </repositories>
 
 </project>

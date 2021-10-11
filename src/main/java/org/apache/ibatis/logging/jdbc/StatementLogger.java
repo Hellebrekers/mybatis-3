@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2020 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public final class StatementLogger extends BaseJdbcLogger implements InvocationH
       }
       if (EXECUTE_METHODS.contains(method.getName())) {
         if (isDebugEnabled()) {
-          debug(" Executing: " + removeExtraWhitespace((String) params[0]), true);
+          debug(" Executing: " + removeBreakingWhitespace((String) params[0]), true);
         }
         if ("executeQuery".equals(method.getName())) {
           ResultSet rs = (ResultSet) method.invoke(statement, params);
