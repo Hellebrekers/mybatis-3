@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2020 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -335,7 +335,7 @@ public abstract class BaseExecutor implements Executor {
 
   protected Connection getConnection(Log statementLog) throws SQLException {
     Connection connection = transaction.getConnection();
-    if (statementLog.isDebugEnabled()) {
+    if (statementLog.isDebugEnabled() || statementLog.isInfoEnabled()) {
       return ConnectionLogger.newInstance(connection, statementLog, queryStack);
     } else {
       return connection;

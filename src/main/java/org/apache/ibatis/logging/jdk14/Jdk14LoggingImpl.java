@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2017 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -32,6 +32,11 @@ public class Jdk14LoggingImpl implements Log {
   }
 
   @Override
+  public boolean isInfoEnabled() {
+    return log.isLoggable(Level.INFO);
+  }
+
+  @Override
   public boolean isDebugEnabled() {
     return log.isLoggable(Level.FINE);
   }
@@ -49,6 +54,11 @@ public class Jdk14LoggingImpl implements Log {
   @Override
   public void error(String s) {
     log.log(Level.SEVERE, s);
+  }
+
+  @Override
+  public void info(String s) {
+    log.log(Level.INFO, s);
   }
 
   @Override

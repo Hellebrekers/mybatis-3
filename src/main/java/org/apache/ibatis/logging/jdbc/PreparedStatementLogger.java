@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2019 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -35,10 +35,12 @@ import org.apache.ibatis.reflection.ExceptionUtil;
 public final class PreparedStatementLogger extends BaseJdbcLogger implements InvocationHandler {
 
   private final PreparedStatement statement;
+  private boolean isSelect;
 
-  private PreparedStatementLogger(PreparedStatement stmt, Log statementLog, int queryStack) {
+  private PreparedStatementLogger(PreparedStatement stmt, Log statementLog, int queryStack, boolean isSelect) {
     super(statementLog, queryStack);
     this.statement = stmt;
+    this.isSelect = isSelect;
   }
 
   @Override
@@ -50,6 +52,8 @@ public final class PreparedStatementLogger extends BaseJdbcLogger implements Inv
       if (EXECUTE_METHODS.contains(method.getName())) {
         if (isDebugEnabled()) {
           debug("Parameters: " + getParameterValueString(), true);
+        } else if (!isSelect && isInfoEnabled()) {
+          info("Parameters: " + getParameterValueString(), true);
         }
         clearColumnInfo();
         if ("executeQuery".equals(method.getName())) {
@@ -71,7 +75,11 @@ public final class PreparedStatementLogger extends BaseJdbcLogger implements Inv
       } else if ("getUpdateCount".equals(method.getName())) {
         int updateCount = (Integer) method.invoke(statement, params);
         if (updateCount != -1) {
-          debug("   Updates: " + updateCount, false);
+          if (isDebugEnabled()) {
+            debug("   Updates: " + updateCount, false);
+          } else if (isInfoEnabled()) {
+            info("    Updates: " + updateCount, false);
+          }
         }
         return updateCount;
       } else {
@@ -90,8 +98,8 @@ public final class PreparedStatementLogger extends BaseJdbcLogger implements Inv
    * @param queryStack - the query stack
    * @return - the proxy
    */
-  public static PreparedStatement newInstance(PreparedStatement stmt, Log statementLog, int queryStack) {
-    InvocationHandler handler = new PreparedStatementLogger(stmt, statementLog, queryStack);
+  public static PreparedStatement newInstance(PreparedStatement stmt, Log statementLog, int queryStack, boolean isSelect) {
+    InvocationHandler handler = new PreparedStatementLogger(stmt, statementLog, queryStack, isSelect);
     ClassLoader cl = PreparedStatement.class.getClassLoader();
     return (PreparedStatement) Proxy.newProxyInstance(cl, new Class[]{PreparedStatement.class, CallableStatement.class}, handler);
   }

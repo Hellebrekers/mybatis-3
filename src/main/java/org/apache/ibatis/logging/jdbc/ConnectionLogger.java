@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2020 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -50,10 +50,21 @@ public final class ConnectionLogger extends BaseJdbcLogger implements Invocation
       }
       if ("prepareStatement".equals(method.getName()) || "prepareCall".equals(method.getName())) {
         if (isDebugEnabled()) {
-          debug(" Preparing: " + removeExtraWhitespace((String) params[0]), true);
+          debug(" Preparing: " + removeBreakingWhitespace((String) params[0]), true);
+        } else if (isInfoEnabled() && !((String) params[0]).toUpperCase().startsWith("SELECT")) {
+          info(" Preparing: " + removeBreakingWhitespace((String) params[0]), true);
         }
         PreparedStatement stmt = (PreparedStatement) method.invoke(connection, params);
-        stmt = PreparedStatementLogger.newInstance(stmt, statementLog, queryStack);
+        stmt = PreparedStatementLogger.newInstance(stmt, statementLog, queryStack, ((String) params[0]).toUpperCase().startsWith("SELECT"));
+        return stmt;
+      } else if ("prepareCall".equals(method.getName())) {
+        if (isDebugEnabled()) {
+          debug(" Preparing: " + removeBreakingWhitespace((String) params[0]), true);
+        } else if (isInfoEnabled() && !((String) params[0]).toUpperCase().startsWith("SELECT")) {
+          info(" Preparing: " + removeBreakingWhitespace((String) params[0]), true);
+        }
+        PreparedStatement stmt = (PreparedStatement) method.invoke(connection, params);
+        stmt = PreparedStatementLogger.newInstance(stmt, statementLog, queryStack, ((String) params[0]).toUpperCase().startsWith("SELECT"));
         return stmt;
       } else if ("createStatement".equals(method.getName())) {
         Statement stmt = (Statement) method.invoke(connection, params);
