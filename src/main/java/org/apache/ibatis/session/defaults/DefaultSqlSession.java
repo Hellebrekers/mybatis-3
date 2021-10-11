@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2020 the original author or authors.
+ *    Copyright 2009-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -51,6 +51,7 @@ public class DefaultSqlSession implements SqlSession {
   private final Executor executor;
 
   private final boolean autoCommit;
+  private boolean autoClose;
   private boolean dirty;
   private List<Cursor<?>> cursorList;
 
@@ -63,6 +64,16 @@ public class DefaultSqlSession implements SqlSession {
 
   public DefaultSqlSession(Configuration configuration, Executor executor) {
     this(configuration, executor, false);
+  }
+
+  @Override
+  public boolean isAutoClose() {
+    return autoClose;
+  }
+
+  @Override
+  public void setAutoClose(boolean autoClose) {
+    this.autoClose = autoClose;
   }
 
   @Override
